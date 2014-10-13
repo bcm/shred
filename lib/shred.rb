@@ -5,6 +5,7 @@ require 'shred/commands/platform_deps'
 require 'shred/commands/ruby_deps'
 require 'shred/commands/services'
 require 'shred/commands/test'
+require 'shred/version'
 require 'thor'
 require 'yaml'
 
