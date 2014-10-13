@@ -1,0 +1,62 @@
+commands:
+  app:
+    start:
+      - foreman start
+  db:
+  dotenv:
+    heroku:
+      app_name: my-app
+      vars:
+        - AIRBRAKE_API_KEY
+      mode: w
+    custom:
+      vars:
+        RACK_ENV: none
+        RAILS_ENV: development
+        WEB_CONCURRENCY: 1
+      mode: a
+  platform_deps:
+    homebrew:
+      - postgres
+      - redis
+      - heroku
+    rubygems:
+      - bundler
+    shell:
+      mailcatcher:
+        install:
+          - rvm default@mailcatcher --create do gem install mailcatcher
+          - rvm wrapper default@mailcatcher --no-prefix mailcatcher catchmail
+          # https://github.com/sj26/mailcatcher/issues/155
+          - rvm default@mailcatcher do gem install i18n -v 0.6.11
+          # - rvm default@mailcatcher do gem uninstall i18n -Ix --version '>0.6.11'
+        update:
+          - rvm default@mailcatcher do gem update mailcatcher
+  ruby_deps:
+  services:
+    launchctl:
+      postgres:
+        plist: /usr/local/opt/postgresql/homebrew.mxcl.postgresql.plist
+      redis:
+        plist: /usr/local/opt/redis/homebrew.mxcl.redis.plist
+    shell:
+      mailcatcher:
+        start: mailcatcher
+        stop: killall mailcatcher
+  setup:
+    platform_deps:
+      - install
+    services:
+      - start
+    ruby_deps:
+      - install
+    pg:
+      - init
+    dotenv:
+      - heroku
+      - custom
+  test:
+    server:
+      - bin/rake spec
+    client:
+      - bin/rake konacha:run
