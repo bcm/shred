@@ -44,17 +44,11 @@ commands:
         start: mailcatcher
         stop: killall mailcatcher
   setup:
-    platform_deps:
-      - install
-    services:
-      - start
-    ruby_deps:
-      - install
-    pg:
-      - init
-    dotenv:
-      - heroku
-      - custom
+    platform_deps: install
+    services: start
+    ruby_deps: install
+    db: init
+    dotenv: heroku
   test:
     server:
       - bin/rake spec

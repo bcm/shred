@@ -1,6 +1,7 @@
 require 'shred/commands/app'
 require 'shred/commands/db'
 require 'shred/commands/dotenv'
+require 'shred/commands/js_deps'
 require 'shred/commands/platform_deps'
 require 'shred/commands/ruby_deps'
 require 'shred/commands/services'
@@ -36,6 +37,10 @@ module Shred
           desc 'ruby_deps SUBCOMMAND ...ARGS', 'Manage Ruby dependencies'
           subcommand 'ruby_deps', Commands::RubyDeps
         end
+        if commands.key?('js_deps')
+          desc 'js_deps SUBCOMMAND ...ARGS', 'Manage JavaScript dependencies'
+          subcommand 'js_deps', Commands::JsDeps
+        end
         if commands.key?('db')
           desc 'db SUBCOMMAND ...ARGS', 'Manage the database'
           subcommand 'db', Commands::Db
@@ -55,8 +60,8 @@ module Shred
         if commands.key?('setup')
           desc 'setup', 'First-time application setup'
           def setup
-            self.class.config['commands']['setup'].each do |cmd, subcmds|
-              invoke(cmd.to_sym, subcmds.map(&:to_sym))
+            self.class.config['commands']['setup'].each do |(cmd, subcmd)|
+              invoke(cmd.to_sym, [subcmd.to_sym])
             end
           end
         end

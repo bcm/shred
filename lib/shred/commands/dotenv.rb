@@ -12,20 +12,25 @@ module Shred
 
         Consults the commands.dotenv.heroku.vars config item to determine which Heroku
         config vars to add to the .env file.
+
+        If the commands.dotenv.custom config item lists custom config items, they are also
+        added to the .env file.
       LONGDESC
       def heroku
         app_name = cfg('heroku.app_name')
         vars = cfg('heroku.vars')
         mode = cfg('heroku.mode') == 'a' ? 'a' : 'w'
+        custom = cfg('custom.vars', required: false)
 
-        authenticate_to_heroku
+        run_shell_command(ShellCommand.new(command_lines: 'heroku auth:whoami'))
 
         run_shell_command(ShellCommand.new(
           command_lines: "heroku config --app #{app_name} --shell",
           output: '.heroku.env'
         ))
-        File.open('.heroku.env') do |input|
-          File.open('.env', mode) do |output|
+
+        File.open('.env', mode) do |output|
+          File.open('.heroku.env') do |input|
             input.readlines.each do |line|
               line.chomp!
               if line =~ /^([^=]+)=/ && vars.include?($1)
@@ -33,34 +38,15 @@ module Shred
               end
             end
           end
-        end
-        File.unlink('.heroku.env')
-        console.say_ok("Heroku config written to environment config file")
-      end
+          File.unlink('.heroku.env')
+          console.say_ok("Heroku config written to environment config file")
 
-      desc 'custom', 'Write custom config items to the environment config file'
-      long_desc <<-LONGDESC
-        Writes custom config items to the environment config file (.env).
-
-        Consults the commands.dotenv.custom config item to determine the custom config items to
-        add to the .env file.
-      LONGDESC
-      option :append, type: :boolean, default: false
-      def custom
-        custom = cfg('custom.vars')
-        mode = cfg('custom.mode') == 'a' ? 'a' : 'w'
-
-        File.open('.env', mode) do |output|
-          custom.each do |key, value|
-            output.write("#{key}=#{value}\n")
+          if custom
+            custom.each do |key, value|
+              output.write("#{key}=#{value}\n")
+            end
+            console.say_ok("Custom config written to environment config file")
           end
-        end
-        console.say_ok("Custom config written to environment config file")
-      end
-
-      no_commands do
-        def authenticate_to_heroku
-          run_shell_command(ShellCommand.new(command_lines: 'heroku auth:whoami'))
         end
       end
     end

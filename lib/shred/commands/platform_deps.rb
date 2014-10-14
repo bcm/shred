@@ -49,6 +49,16 @@ module Shred
         end
       end
 
+      class NpmDependency < Dependency
+        def install(ctx)
+          super(ctx, "npm install #{sym}")
+        end
+
+        def update(ctx)
+          super(ctx, "npm update #{sym}")
+        end
+      end
+
       class ShellCommandDependency < Dependency
         attr_reader :install_command_lines, :update_command_lines
 
@@ -99,6 +109,8 @@ module Shred
               specs.each_with_object(m) { |svc, mm| mm << HomebrewDependency.new(sym: svc.to_sym) }
             when :rubygems
               specs.each_with_object(m) { |svc, mm| mm << RubyGemDependency.new(sym: svc.to_sym) }
+            when :npm
+              specs.each_with_object(m) { |svc, mm| mm << NpmDependency.new(sym: svc.to_sym) }
             when :shell
               specs.each_with_object(m) do |(svc, keys), mm|
                 install = keys['install'] or
