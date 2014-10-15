@@ -176,10 +176,10 @@ module Shred
               if ENV.key?(env_key)
                 ENV[env_key]
               else
-                raise "Unset environment variable #{env_key} referenced by custom config var #{key}"
+                raise "Unset environment variable #{env_key} referenced by value #{value}"
               end
             else
-              raise "Unknown interpolation variable #{ref} referenced by custom config var #{key}"
+              raise "Unknown interpolation variable #{ref} referenced by value #{value}"
             end
           end
         end

@@ -21,6 +21,7 @@ commands:
       app_name: <%= app_name %>-staging
       vars:
         - AIRBRAKE_API_KEY
+        - ELASTICSEARCH_URL
     custom:
       vars:
         RAILS_ENV: development
@@ -36,14 +37,22 @@ commands:
           name: uuid
           type: string
         read_capacity_units: 10
-        write_capacity_units: 100
+        write_capacity_units: 10
       impressions:
         region: '{env:AWS_DYNAMO_DB_REGION}'
         primary_key:
           name: uuid
           type: string
         read_capacity_units: 10
-        write_capacity_units: 100
+        write_capacity_units: 10
+  elasticsearch:
+    url: '{env:ELASTICSEARCH_URL}'
+    indexes:
+      stories-development:
+        create:
+          - thor stories:create
+        import:
+          - thor stories:index
   js_deps:
   platform_deps:
     homebrew:

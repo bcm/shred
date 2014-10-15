@@ -3,6 +3,7 @@ require 'shred/commands/db'
 require 'shred/commands/deploy'
 require 'shred/commands/dotenv'
 require 'shred/commands/dynamo_db'
+require 'shred/commands/elasticsearch'
 require 'shred/commands/js_deps'
 require 'shred/commands/platform_deps'
 require 'shred/commands/ruby_deps'
@@ -53,12 +54,16 @@ module Shred
           subcommand 'dotenv', Commands::Dotenv
         end
         if commands.key?('s3')
-          desc 's3 SUBCOMMAND ...ARGS', 'Interact with Amazon S3'
+          desc 's3 SUBCOMMAND ...ARGS', 'Manage Amazon S3 buckets'
           subcommand 's3', Commands::S3
         end
         if commands.key?('dynamo_db')
-          desc 'dynamo_db SUBCOMMAND ...ARGS', 'Interact with Amazon Dynamo DB'
+          desc 'dynamo_db SUBCOMMAND ...ARGS', 'Manage Amazon Dynamo DB tables'
           subcommand 'dynamo_db', Commands::DynamoDb
+        end
+        if commands.key?('elasticsearch')
+          desc 'elasticsearch subcommand ...ARGS', 'Manage Elasticsearch indexes'
+          subcommand 'elasticsearch', Commands::Elasticsearch
         end
         if commands.key?('test')
           desc 'test SUBCOMMAND ...ARGS', 'Run tests'

@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'aws-sdk'
   spec.add_dependency 'dotenv'
+  spec.add_dependency 'elasticsearch'
   spec.add_dependency 'platform-api'
   spec.add_dependency 'thor'
 end
