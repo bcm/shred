@@ -24,8 +24,26 @@ commands:
     custom:
       vars:
         RAILS_ENV: development
-        AWS_S3_BUCKET: <%= app_name %>-dev-{env.user}
+        AWS_S3_BUCKET: <%= app_name %>-dev-{env:USER}
         AWS_S3_REGION: us-west-2
+        AWS_DYNAMO_DB_REGION: us-west-2
+  dynamo_db:
+    table_prefix: 'dev-{env:USER}'
+    tables:
+      clicks:
+        region: '{env:AWS_DYNAMO_DB_REGION}'
+        primary_key:
+          name: uuid
+          type: string
+        read_capacity_units: 10
+        write_capacity_units: 100
+      impressions:
+        region: '{env:AWS_DYNAMO_DB_REGION}'
+        primary_key:
+          name: uuid
+          type: string
+        read_capacity_units: 10
+        write_capacity_units: 100
   js_deps:
   platform_deps:
     homebrew:
@@ -59,8 +77,8 @@ commands:
   s3:
     buckets:
       default:
-        name: dotenv:AWS_S3_BUCKET
-        region: dotenv:AWS_S3_REGION
+        name: '{env:AWS_S3_BUCKET}'
+        region: '{env:AWS_S3_REGION}'
   setup:
     platform_deps: install
     services: start

@@ -2,6 +2,7 @@ require 'shred/commands/app'
 require 'shred/commands/db'
 require 'shred/commands/deploy'
 require 'shred/commands/dotenv'
+require 'shred/commands/dynamo_db'
 require 'shred/commands/js_deps'
 require 'shred/commands/platform_deps'
 require 'shred/commands/ruby_deps'
@@ -54,6 +55,10 @@ module Shred
         if commands.key?('s3')
           desc 's3 SUBCOMMAND ...ARGS', 'Interact with Amazon S3'
           subcommand 's3', Commands::S3
+        end
+        if commands.key?('dynamo_db')
+          desc 'dynamo_db SUBCOMMAND ...ARGS', 'Interact with Amazon Dynamo DB'
+          subcommand 'dynamo_db', Commands::DynamoDb
         end
         if commands.key?('test')
           desc 'test SUBCOMMAND ...ARGS', 'Run tests'

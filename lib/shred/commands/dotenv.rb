@@ -38,21 +38,7 @@ module Shred
 
         if custom
           custom.each do |key, value|
-            value.gsub!(/{[^}]+}/) do |match|
-              ref = match.slice(1, match.length)
-              ref = ref.slice(0, ref.length - 1)
-              if ref =~ /^env\.(.+)$/
-                env_key = $1.upcase
-                if ENV.key?(env_key)
-                  ENV[env_key]
-                else
-                  raise "Unset environment variable #{env_key} referenced by custom config var #{key}"
-                end
-              else
-                raise "Unknown substitution variable #{ref} referenced by custom config var #{key}"
-              end
-            end
-            outvars[key] = value
+            outvars[key] = interpolate_value(value)
           end
         end
 
