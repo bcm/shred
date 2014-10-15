@@ -57,9 +57,10 @@ commands:
         start: mailcatcher
         stop: killall mailcatcher
   s3:
-    bucket:
-      name: dotenv:AWS_S3_BUCKET
-      region: dotenv:AWS_S3_REGION
+    buckets:
+      default:
+        name: dotenv:AWS_S3_BUCKET
+        region: dotenv:AWS_S3_REGION
   setup:
     platform_deps: install
     services: start
