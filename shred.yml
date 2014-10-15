@@ -3,6 +3,19 @@ commands:
     start:
       - foreman start
   db:
+  deploy:
+    default_environment: staging
+    staging:
+      branch: master
+      heroku:
+        app_name: my-app-staging
+    production:
+      branch: production
+      heroku:
+        app_name: my-app-production
+    notifications:
+      airbrake: bin/rake airbrake:deploy RAILS_ENV={environment} TO={environment}
+      new_relic: bin/newrelic deployments -e {environment} -r {revision}
   dotenv:
     heroku:
       app_name: my-app

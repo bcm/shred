@@ -64,7 +64,11 @@ module Shred
         @success_msg = success_msg
         @error_msg = error_msg
         @output = output
-        @out = File.open(output, 'w') if output
+        @out = if output && output.respond_to?(:write)
+          output
+        elsif output
+          File.open(output, 'w')
+        end
       end
 
       def run(&block)
@@ -107,6 +111,7 @@ module Shred
             console.say_err(exit_status)
           end
         end
+        exit_status
       end
     end
 
@@ -150,10 +155,12 @@ module Shred
           sub_keys = key.to_s.split('.')
           value = nil
           sub_keys.each_with_index do |sub_key, i|
-            if base_cfg.key?(sub_key)
+            if base_cfg && base_cfg.key?(sub_key)
               value = base_cfg = base_cfg[sub_key]
             elsif i < sub_keys.length - 1
-              raise "Missing '#{key}' config for '#{command}'"
+              raise "Missing '#{key}' config for '#{command_name}' command"
+            else
+              value = nil
             end
           end
           raise "Missing '#{key}' config for '#{command_name}' command" if required && !value

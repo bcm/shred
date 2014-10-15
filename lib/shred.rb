@@ -1,5 +1,6 @@
 require 'shred/commands/app'
 require 'shred/commands/db'
+require 'shred/commands/deploy'
 require 'shred/commands/dotenv'
 require 'shred/commands/js_deps'
 require 'shred/commands/platform_deps'
@@ -56,6 +57,10 @@ module Shred
         if commands.key?('app')
           desc 'app SUBCOMMAND ...ARGS', 'Control the application'
           subcommand 'app', Commands::App
+        end
+        if commands.key?('deploy')
+          desc 'deploy SUBCOMMAND ...ARGS', 'Deploy the application'
+          subcommand 'deploy', Commands::Deploy
         end
         if commands.key?('setup')
           desc 'setup', 'First-time application setup'
