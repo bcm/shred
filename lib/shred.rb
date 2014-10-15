@@ -6,6 +6,7 @@ require 'shred/commands/js_deps'
 require 'shred/commands/platform_deps'
 require 'shred/commands/ruby_deps'
 require 'shred/commands/services'
+require 'shred/commands/s3'
 require 'shred/commands/test'
 require 'shred/version'
 require 'thor'
@@ -43,12 +44,16 @@ module Shred
           subcommand 'js_deps', Commands::JsDeps
         end
         if commands.key?('db')
-          desc 'db SUBCOMMAND ...ARGS', 'Manage the database'
+          desc 'db SUBCOMMAND ...ARGS', 'Manage the relational database system'
           subcommand 'db', Commands::Db
         end
         if commands.key?('dotenv')
           desc 'dotenv SUBCOMMAND ...ARGS', 'Manage the environmental configuration'
           subcommand 'dotenv', Commands::Dotenv
+        end
+        if commands.key?('s3')
+          desc 's3 SUBCOMMAND ...ARGS', 'Interact with Amazon S3'
+          subcommand 's3', Commands::S3
         end
         if commands.key?('test')
           desc 'test SUBCOMMAND ...ARGS', 'Run tests'
