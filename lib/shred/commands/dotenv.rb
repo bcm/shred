@@ -19,33 +19,29 @@ module Shred
       def heroku
         app_name = cfg('heroku.app_name')
         vars = cfg('heroku.vars')
-        mode = cfg('heroku.mode') == 'a' ? 'a' : 'w'
         custom = cfg('custom.vars', required: false)
 
         run_shell_command(ShellCommand.new(command_lines: 'heroku auth:whoami'))
 
+        io = StringIO.new
         run_shell_command(ShellCommand.new(
           command_lines: "heroku config --app #{app_name} --shell",
-          output: '.heroku.env'
+          output: io
         ))
 
-        File.open('.env', mode) do |output|
-          File.open('.heroku.env') do |input|
-            input.readlines.each do |line|
-              line.chomp!
-              if line =~ /^([^=]+)=/ && vars.include?($1)
-                output.write("#{line}\n")
-              end
+        File.open('.env', 'w') do |output|
+          io.string.split("\n").each do |line|
+            if line =~ /^([^=]+)=/ && vars.include?($1)
+              output.write("#{line}\n")
             end
           end
-          File.unlink('.heroku.env')
-          console.say_ok("Heroku config written to environment config file")
+          console.say_ok("Heroku config written to .env")
 
           if custom
             custom.each do |key, value|
               output.write("#{key}=#{value}\n")
             end
-            console.say_ok("Custom config written to environment config file")
+            console.say_ok("Custom config written to .env")
           end
         end
       end

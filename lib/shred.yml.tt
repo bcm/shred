@@ -8,26 +8,23 @@ commands:
     staging:
       branch: master
       heroku:
-        app_name: my-app-staging
+        app_name: <%= app_name %>-staging
     production:
       branch: production
       heroku:
-        app_name: my-app-production
+        app_name: <%= app_name %>-production
     notifications:
       airbrake: bin/rake airbrake:deploy RAILS_ENV={environment} TO={environment}
       new_relic: bin/newrelic deployments -e {environment} -r {revision}
   dotenv:
     heroku:
-      app_name: my-app
+      app_name: <%= app_name %>-staging
       vars:
         - AIRBRAKE_API_KEY
-      mode: w
     custom:
       vars:
-        RACK_ENV: none
         RAILS_ENV: development
-        WEB_CONCURRENCY: 1
-      mode: a
+  js_deps:
   platform_deps:
     homebrew:
       - postgres
@@ -60,10 +57,11 @@ commands:
     platform_deps: install
     services: start
     ruby_deps: install
+    js_deps: install
     db: init
     dotenv: heroku
   test:
     server:
       - bin/rake spec
     client:
-      - bin/rake konacha:run
+      - bin/rake teaspoon:run

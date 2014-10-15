@@ -77,4 +77,18 @@ module Shred
       attr_reader :config
     end
   end
+
+  class Generator < Thor::Group
+    include Thor::Actions
+
+    argument :app_name
+
+    def self.source_root
+      File.dirname(__FILE__)
+    end
+
+    def create_config_file
+      template('shred.yml.tt', 'shred.yml')
+    end
+  end
 end
