@@ -27,6 +27,7 @@ commands:
   js_deps:
   platform_deps:
     homebrew:
+      - node
       - postgres
       - redis
       - heroku
@@ -64,4 +65,4 @@ commands:
     server:
       - bin/rake spec
     client:
-      - bin/rake teaspoon:run
+      - bin/rake teaspoon
