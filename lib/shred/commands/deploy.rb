@@ -1,6 +1,6 @@
-require 'shred/commands/base'
 require 'dotenv'
 require 'platform-api'
+require 'shred/commands/base'
 
 module Shred
   module Commands

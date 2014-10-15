@@ -23,27 +23,46 @@ module Shred
 
         run_shell_command(ShellCommand.new(command_lines: 'heroku auth:whoami'))
 
-        io = StringIO.new
+        heroku = StringIO.new
         run_shell_command(ShellCommand.new(
           command_lines: "heroku config --app #{app_name} --shell",
-          output: io
+          output: heroku
         ))
 
-        File.open('.env', 'w') do |output|
-          io.string.split("\n").each do |line|
-            if line =~ /^([^=]+)=/ && vars.include?($1)
-              output.write("#{line}\n")
-            end
-          end
-          console.say_ok("Heroku config written to .env")
+        outvars = {}
 
-          if custom
-            custom.each do |key, value|
-              output.write("#{key}=#{value}\n")
+        heroku.string.split("\n").each do |line|
+          key, value = line.split('=', 2)
+          outvars[key] = value if vars.include?(key)
+        end
+
+        if custom
+          custom.each do |key, value|
+            value.gsub!(/{[^}]+}/) do |match|
+              ref = match.slice(1, match.length)
+              ref = ref.slice(0, ref.length - 1)
+              if ref =~ /^env\.(.+)$/
+                env_key = $1.upcase
+                if ENV.key?(env_key)
+                  ENV[env_key]
+                else
+                  raise "Unset environment variable #{env_key} referenced by custom config var #{key}"
+                end
+              else
+                raise "Unknown substitution variable #{ref} referenced by custom config var #{key}"
+              end
             end
-            console.say_ok("Custom config written to .env")
+            outvars[key] = value
           end
         end
+
+        File.open('.env', 'w') do |dotenv|
+          outvars.sort_by(&:first).each do |(key, value)|
+            dotenv.write("#{key}=#{value}\n")
+          end
+        end
+
+        console.say_ok("Heroku config written to .env")
       end
     end
   end
