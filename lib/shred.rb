@@ -83,6 +83,7 @@ module Shred
             self.class.config['commands']['setup'].each do |(cmd, subcmd)|
               invoke(cmd.to_sym, [subcmd.to_sym])
             end
+            console.say_ok("Setup complete!")
           end
         end
       end

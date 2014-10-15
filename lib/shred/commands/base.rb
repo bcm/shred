@@ -167,7 +167,7 @@ module Shred
           value
         end
 
-        def interpolate_value(value)
+        def interpolate_value(value, context: {})
           value.gsub(/{[^}]+}/) do |match|
             ref = match.slice(1, match.length)
             ref = ref.slice(0, ref.length - 1)
@@ -176,10 +176,12 @@ module Shred
               if ENV.key?(env_key)
                 ENV[env_key]
               else
-                raise "Unset environment variable #{env_key} referenced by value #{value}"
+                raise "Unset environment variable '#{env_key}' referenced by value '#{value}'"
               end
+            elsif context.key?(ref.to_sym)
+              context[ref.to_sym]
             else
-              raise "Unknown interpolation variable #{ref} referenced by value #{value}"
+              raise "Unknown interpolation variable '#{ref}' referenced by value '#{value}'"
             end
           end
         end

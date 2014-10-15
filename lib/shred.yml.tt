@@ -3,6 +3,8 @@ commands:
     start:
       - foreman start
   db:
+    dump: pg_dump -Fc --no-acl --no-owner -h localhost <%= app_name %>_development > <%= app_name %>_development.dump
+    restore: pg_restore --verbose --clean --no-acl --no-owner -h localhost -d <%= app_name %>_development {dumpfile}
   deploy:
     default_environment: staging
     staging:
