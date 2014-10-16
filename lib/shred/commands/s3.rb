@@ -31,20 +31,35 @@ module Shred
         cfg('buckets').each do |(key, bucket_cfg)|
           name = interpolate_value(bucket_cfg['name'])
           region = interpolate_value(bucket_cfg['region'])
+          cors_cfg = bucket_cfg['cors']
 
-          create_bucket(name, region)
+          create_bucket(name, region, cors: cors_cfg)
         end
       end
 
       no_commands do
-        def create_bucket(name, region)
+        def create_bucket(name, region, cors: nil)
           s3 = AWS::S3.new(region: region)
           region ||= 'default'
-          if s3.buckets[name].exists?
+          bucket = s3.buckets[name]
+          if bucket.exists?
             console.say_ok("S3 bucket #{name} already exists in #{region} region")
           else
-            s3.buckets.create(name)
+            bucket = s3.buckets.create(name)
             console.say_ok("Created S3 bucket #{name} in #{region} region")
+          end
+          if cors
+            rules = cors.map do |id, rule_cfg|
+              {
+                allowed_methods: Array(rule_cfg['allowed_methods']),
+                allowed_origins: Array(rule_cfg['allowed_origins']),
+                allowed_headers: Array(rule_cfg['allowed_headers']),
+                max_age_seconds:       rule_cfg['max_age_seconds'],
+                expose_headers:  Array(rule_cfg['expose_headers'])
+              }
+            end
+            bucket.cors.set(rules)
+            console.say_ok("Set CORS config for bucket #{name}")
           end
         end
       end

@@ -90,6 +90,13 @@ commands:
       default:
         name: '{env:AWS_S3_BUCKET}'
         region: '{env:AWS_S3_REGION}'
+        cors:
+          local:
+            allowed_methods:
+              - POST
+              - PUT
+            allowed_origins: 'http://*.example.com'
+            allowed_headers: '*'
   setup:
     platform_deps: install
     services: start
