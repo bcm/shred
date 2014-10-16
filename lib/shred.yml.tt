@@ -104,7 +104,7 @@ commands:
             acl: public_read
   setup:
     platform_deps: install
-    services: start
+    services: restart
     ruby_deps: install
     js_deps: install
     db: init

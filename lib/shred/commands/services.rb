@@ -27,6 +27,11 @@ module Shred
             error_msg: "#{sym} could not be stopped"
           ))
         end
+
+        def restart(ctx)
+          stop(ctx)
+          start(ctx)
+        end
       end
 
       class LaunchctlService < Service
@@ -86,6 +91,18 @@ module Shred
       LONGDESC
       def stop(*services)
         invoke_for_services(:stop, *services)
+      end
+
+      desc 'restart [services...]', 'Stop and start some or all platform services'
+      long_desc <<-LONGDESC
+        Stops and then starts platform services that the application uses.
+
+        When no services are specified, all services are restarted.
+
+        When one or more services are specified, only those services are restarted.
+      LONGDESC
+      def restart(*services)
+        invoke_for_services(:restart, *services)
       end
 
       no_commands do

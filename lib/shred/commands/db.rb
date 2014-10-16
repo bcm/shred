@@ -9,7 +9,7 @@ module Shred
       LONGDESC
       def init
         run_shell_command(ShellCommand.new(
-          command_lines: 'bin/rake db:create:all db:structure:load',
+          command_lines: 'bin/rake db:drop:all db:create:all db:structure:load',
           success_msg: 'Database initialized',
           error_msg: 'Database could not be initialized'
         ))
