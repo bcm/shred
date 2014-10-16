@@ -97,6 +97,11 @@ commands:
               - PUT
             allowed_origins: 'http://*.example.com'
             allowed_headers: '*'
+        files:
+          crossdomain:
+            path: etc/crossdomain.xml
+            key: 'crossdomain.xml'
+            acl: public_read
   setup:
     platform_deps: install
     services: start

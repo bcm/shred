@@ -32,13 +32,14 @@ module Shred
           name = interpolate_value(bucket_cfg['name'])
           region = interpolate_value(bucket_cfg['region'])
           cors_cfg = bucket_cfg['cors']
+          files_cfg = bucket_cfg['files']
 
-          create_bucket(name, region, cors: cors_cfg)
+          create_bucket(name, region, cors: cors_cfg, files: files_cfg)
         end
       end
 
       no_commands do
-        def create_bucket(name, region, cors: nil)
+        def create_bucket(name, region, cors: nil, files: nil)
           s3 = AWS::S3.new(region: region)
           region ||= 'default'
           bucket = s3.buckets[name]
@@ -60,6 +61,15 @@ module Shred
             end
             bucket.cors.set(rules)
             console.say_ok("Set CORS config for bucket #{name}")
+          end
+          if files
+            files.map do |id, file_cfg|
+              path = interpolate_value(file_cfg['path'])
+              key = interpolate_value(file_cfg['key'])
+              acl = interpolate_value(file_cfg['acl'])
+              bucket.objects[key].write(Pathname.new(path), acl: acl)
+              console.say_ok("Uploaded file #{path} to bucket #{name} at #{key}")
+            end
           end
         end
       end
