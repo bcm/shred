@@ -5,13 +5,15 @@ require 'shred/commands/base'
 module Shred
   module Commands
     class S3 < Base
-      desc 'mkbucket NAME REGION', 'Create an S3 bucket'
+      desc 'mkbucket NAME [REGION]', 'Create an S3 bucket'
       long_desc <<-LONGDESC
         Create an S3 bucket with the given name in the given region.
 
         The bucket and region names are used exactly as specified. They are *not* interpolated.
+
+        If region is not specifed the bucket is created in the default S3 region.
       LONGDESC
-      def mkbucket(name, region)
+      def mkbucket(name, region = nil)
         ::Dotenv.load
 
         create_bucket(name, region)
@@ -37,11 +39,12 @@ module Shred
       no_commands do
         def create_bucket(name, region)
           s3 = AWS::S3.new(region: region)
+          region ||= 'default'
           if s3.buckets[name].exists?
-            console.say_ok("S3 bucket #{name} already exists in region #{region}")
+            console.say_ok("S3 bucket #{name} already exists in #{region} region")
           else
             s3.buckets.create(name)
-            console.say_ok("Created S3 bucket #{name} in region #{region}")
+            console.say_ok("Created S3 bucket #{name} in #{region} region")
           end
         end
       end

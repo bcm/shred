@@ -168,6 +168,7 @@ module Shred
         end
 
         def interpolate_value(value, context: {})
+          return nil if value.nil?
           value.gsub(/{[^}]+}/) do |match|
             ref = match.slice(1, match.length)
             ref = ref.slice(0, ref.length - 1)
