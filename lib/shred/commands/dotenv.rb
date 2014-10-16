@@ -44,7 +44,7 @@ module Shred
 
         File.open('.env', 'w') do |dotenv|
           outvars.sort_by(&:first).each do |(key, value)|
-            dotenv.write("#{key}=#{value}\n")
+            dotenv.write("#{key}='#{value}'\n")
           end
         end
 
