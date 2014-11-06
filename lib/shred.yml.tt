@@ -55,6 +55,11 @@ commands:
           - thor stories:create
         import:
           - thor stories:index
+  heroku:
+    staging:
+      app_name: <%= app_name %>-staging
+    production:
+      app_name: <%= app_name %>-production
   js_deps:
   platform_deps:
     homebrew:
