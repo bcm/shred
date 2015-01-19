@@ -1,5 +1,5 @@
 require 'dotenv'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 require 'shred/commands/base'
 
 module Shred
