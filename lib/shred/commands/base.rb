@@ -91,7 +91,7 @@ module Shred
     class ShellCommandRunner
       attr_reader :console
 
-      def initialize(console: console)
+      def initialize(console:)
         @console = console
       end
 
